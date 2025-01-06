@@ -115,15 +115,15 @@ export class Utils {
     const el = Utils.createDiv(['grid-stack-item', itemClass]);
     const cont = Utils.createDiv(['grid-stack-item-content'], el);
 
-    const lazyLoad = n.lazyLoad || n.grid?.opts?.lazyLoad && n.lazyLoad !== false;
+    const lazyLoad = n.lazyLoad || n.grid.opts.lazyLoad && n.lazyLoad !== false;
     if (lazyLoad) {
       if (!n.visibleObservable) {
         n.visibleObservable = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) {
-          n.visibleObservable?.disconnect();
+          n.visibleObservable.disconnect();
           delete n.visibleObservable;
           GridStack.renderCB(cont, n)
         }});
-        window.setTimeout(() => n.visibleObservable?.observe(el)); // wait until callee sets position attributes
+        window.setTimeout(() => n.visibleObservable.observe(el)); // wait until callee sets position attributes
       }
     } else GridStack.renderCB(cont, n);
 
@@ -134,13 +134,13 @@ export class Utils {
   static createDiv(classes: string[], parent?: HTMLElement): HTMLElement {
     const el = document.createElement('div');
     classes.forEach(c => {if (c) el.classList.add(c)});
-    parent?.appendChild(el);
+    parent.appendChild(el);
     return el;
   }
 
   /** true if we should resize to content. strict=true when only 'sizeToContent:true' and not a number which lets user adjust */
   static shouldSizeToContent(n: GridStackNode | undefined, strict = false): boolean {
-    return n?.grid && (strict ?
+    return n.grid && (strict ?
       (n.sizeToContent === true || (n.grid.opts.sizeToContent === true && n.sizeToContent === undefined)) :
       (!!n.sizeToContent || (n.grid.opts.sizeToContent && n.sizeToContent !== false)));
   }
@@ -198,7 +198,7 @@ export class Utils {
    */
   static createStylesheet(id: string, parent?: HTMLElement, options?: { nonce?: string }): HTMLStyleElement {
     const style: HTMLStyleElement = document.createElement('style');
-    const nonce = options?.nonce
+    const nonce = options.nonce
     if (nonce) style.nonce = nonce
     style.setAttribute('type', 'text/css');
     style.setAttribute('gs-style-id', id);
@@ -633,6 +633,6 @@ export class Utils {
 
   /** true if the item can be rotated (checking for prop, not space available) */
   public static canBeRotated(n: GridStackNode): boolean {
-    return !(!n || n.w === n.h || n.locked || n.noResize || n.grid?.opts.disableResize || (n.minW && n.minW === n.maxW) || (n.minH && n.minH === n.maxH));
+    return !(!n || n.w === n.h || n.locked || n.noResize || n.grid.opts.disableResize || (n.minW && n.minW === n.maxW) || (n.minH && n.minH === n.maxH));
   }
 }

@@ -67,7 +67,7 @@ export class AngularNgForCmdTestComponent implements AfterViewInit {
         } else if (widgetToMake.action === "remove") {
           const id = String(widgetToMake.id);
           // Note: DOM element has been removed by Angular already so look for it through the engine node list
-          const removeEl = this.grid.engine.nodes.find((n) => n.el?.id === id)?.el;
+          const removeEl = this.grid.engine.nodes.find((n) => n.el.id === id).el;
           if (removeEl) this.grid.removeWidget(removeEl);
         }
       }

@@ -75,7 +75,7 @@ export class GridstackComponent implements OnInit, AfterContentInit, OnDestroy {
   /** initial options for creation of the grid */
   @Input() public set options(val: GridStackOptions) { this._options = val; }
   /** return the current running options */
-  public get options(): GridStackOptions { return this._grid?.opts || this._options || {}; }
+  public get options(): GridStackOptions { return this._grid.opts || this._options || {}; }
 
   /** true while ng-content with 'no-item-content' should be shown when last item is removed from a grid */
   @Input() public isEmpty?: boolean;
@@ -145,7 +145,7 @@ export class GridstackComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public ngOnInit(): void {
     // init ourself before any template children are created since we track them below anyway - no need to double create+update widgets
-    this.loaded = !!this.options?.children?.length;
+    this.loaded = !!this.options.children.length;
     this._grid = GridStack.init(this._options, this.el);
     delete this._options; // GS has it now
 
@@ -155,7 +155,7 @@ export class GridstackComponent implements OnInit, AfterContentInit, OnDestroy {
   /** wait until after all DOM is ready to init gridstack children (after angular ngFor and sub-components run first) */
   public ngAfterContentInit(): void {
     // track whenever the children list changes and update the layout...
-    this._sub = this.gridstackItems?.changes.subscribe(() => this.updateAll());
+    this._sub = this.gridstackItems.changes.subscribe(() => this.updateAll());
     // ...and do this once at least unless we loaded children already
     if (!this.loaded) this.updateAll();
     this.hookEvents(this.grid);
@@ -163,8 +163,8 @@ export class GridstackComponent implements OnInit, AfterContentInit, OnDestroy {
 
   public ngOnDestroy(): void {
     this.unhookEvents(this._grid);
-    this._sub?.unsubscribe();
-    this._grid?.destroy();
+    this._sub.unsubscribe();
+    this._grid.destroy();
     delete this._grid;
     delete this.el._gridComp;
     delete this.container;
@@ -178,7 +178,7 @@ export class GridstackComponent implements OnInit, AfterContentInit, OnDestroy {
   public updateAll() {
     if (!this.grid) return;
     const layout: GridStackWidget[] = [];
-    this.gridstackItems?.forEach(item => {
+    this.gridstackItems.forEach(item => {
       layout.push(item.options);
       item.clearOptions();
     });
@@ -232,23 +232,23 @@ export function gsCreateNgComponents(host: GridCompHTMLElement | HTMLElement, n:
       // if (!container) {
       //   const hostElement: Element = host;
       //   const environmentInjector: EnvironmentInjector;
-      //   grid = createComponent(GridstackComponent, {environmentInjector, hostElement})?.instance;
+      //   grid = createComponent(GridstackComponent, {environmentInjector, hostElement}).instance;
       // }
 
-      const gridItemComp = (host.parentElement as GridItemCompHTMLElement)?._gridItemComp;
+      const gridItemComp = (host.parentElement as GridItemCompHTMLElement)._gridItemComp;
       if (!gridItemComp) return;
       // check if gridItem has a child component with 'container' exposed to create under..
-      const container = (gridItemComp.childWidget as any)?.container || gridItemComp.container;
-      const gridRef = container?.createComponent(GridstackComponent);
-      const grid = gridRef?.instance;
+      const container = (gridItemComp.childWidget as any).container || gridItemComp.container;
+      const gridRef = container.createComponent(GridstackComponent);
+      const grid = gridRef.instance;
       if (!grid) return;
       grid.ref = gridRef;
       grid.options = n;
       return grid.el;
     } else {
       const gridComp = (host as GridCompHTMLElement)._gridComp;
-      const gridItemRef = gridComp?.container?.createComponent(GridstackItemComponent);
-      const gridItem = gridItemRef?.instance;
+      const gridItemRef = gridComp.container.createComponent(GridstackItemComponent);
+      const gridItem = gridItemRef.instance;
       if (!gridItem) return;
       gridItem.ref = gridItemRef
 
@@ -258,7 +258,7 @@ export function gsCreateNgComponents(host: GridCompHTMLElement | HTMLElement, n:
       if (type) {
         // shared code to create our selector component
         const createComp = () => {
-          const childWidget = gridItem.container?.createComponent(type)?.instance as BaseWidget;
+          const childWidget = gridItem.container.createComponent(type).instance as BaseWidget;
           // if proper BaseWidget subclass, save it and load additional data
           if (childWidget && typeof childWidget.serialize === 'function' && typeof childWidget.deserialize === 'function') {
             gridItem.childWidget = childWidget;
@@ -266,15 +266,15 @@ export function gsCreateNgComponents(host: GridCompHTMLElement | HTMLElement, n:
           }
         }
 
-        const lazyLoad = n.lazyLoad || n.grid?.opts?.lazyLoad && n.lazyLoad !== false;
+        const lazyLoad = n.lazyLoad || n.grid.opts.lazyLoad && n.lazyLoad !== false;
         if (lazyLoad) {
           if (!n.visibleObservable) {
             n.visibleObservable = new IntersectionObserver(([entry]) => { if (entry.isIntersecting) {
-              n.visibleObservable?.disconnect();
+              n.visibleObservable.disconnect();
               delete n.visibleObservable;
               createComp();
             }});
-            window.setTimeout(() => n.visibleObservable?.observe(gridItem.el)); // wait until callee sets position attributes
+            window.setTimeout(() => n.visibleObservable.observe(gridItem.el)); // wait until callee sets position attributes
           }
         } else createComp();
       }
@@ -287,13 +287,13 @@ export function gsCreateNgComponents(host: GridCompHTMLElement | HTMLElement, n:
     // Note: this will destroy all children dynamic components as well: gridItem -> childWidget
     //
     if (isGrid) {
-      const grid = (n.el as GridCompHTMLElement)?._gridComp;
-      if (grid?.ref) grid.ref.destroy();
-      else grid?.ngOnDestroy();
+      const grid = (n.el as GridCompHTMLElement)._gridComp;
+      if (grid.ref) grid.ref.destroy();
+      else grid.ngOnDestroy();
     } else {
-      const gridItem = (n.el as GridItemCompHTMLElement)?._gridItemComp;
-      if (gridItem?.ref) gridItem.ref.destroy();
-      else gridItem?.ngOnDestroy();
+      const gridItem = (n.el as GridItemCompHTMLElement)._gridItemComp;
+      if (gridItem.ref) gridItem.ref.destroy();
+      else gridItem.ngOnDestroy();
     }
   }
   return;
@@ -306,16 +306,16 @@ export function gsCreateNgComponents(host: GridCompHTMLElement | HTMLElement, n:
  * using BaseWidget.serialize()
  */
 export function gsSaveAdditionalNgInfo(n: NgGridStackNode, w: NgGridStackWidget) {
-  const gridItem = (n.el as GridItemCompHTMLElement)?._gridItemComp;
+  const gridItem = (n.el as GridItemCompHTMLElement)._gridItemComp;
   if (gridItem) {
-    const input = gridItem.childWidget?.serialize();
+    const input = gridItem.childWidget.serialize();
     if (input) {
       w.input = input;
     }
     return;
   }
   // else check if Grid
-  const grid = (n.el as GridCompHTMLElement)?._gridComp;
+  const grid = (n.el as GridCompHTMLElement)._gridComp;
   if (grid) {
     //.... save any custom data
   }

@@ -114,7 +114,7 @@ export class DDResizableHandle {
   /** @internal call when keys are being pressed - use Esc to cancel */
   protected _keyEvent(e: KeyboardEvent): void {
     if (e.key === 'Escape') {
-      this.host.gridstackNode?.grid?.engine.restoreInitial();
+      this.host.gridstackNode.grid.engine.restoreInitial();
       this._mouseUp(this.mouseDownEvent);
     }
   }

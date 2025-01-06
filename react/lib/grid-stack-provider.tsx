@@ -13,13 +13,13 @@ export function GridStackProvider({
       if (obj.id && obj.content) {
         map.set(obj.id, obj);
       }
-      if (obj.subGridOpts?.children) {
+      if (obj.subGridOpts.children) {
         obj.subGridOpts.children.forEach((child: GridStackWidget) => {
           deepFindNodeWithContent(child);
         });
       }
     };
-    initialOptions.children?.forEach((child: GridStackWidget) => {
+    initialOptions.children.forEach((child: GridStackWidget) => {
       deepFindNodeWithContent(child);
     });
     return map;
@@ -29,7 +29,7 @@ export function GridStackProvider({
     (fn: (id: string) => Omit<GridStackWidget, "id">) => {
       const newId = `widget-${Math.random().toString(36).substring(2, 15)}`;
       const widget = fn(newId);
-      gridStack?.addWidget({ ...widget, id: newId });
+      gridStack.addWidget({ ...widget, id: newId });
       setRawWidgetMetaMap((prev) => {
         const newMap = new Map<string, GridStackWidget>(prev);
         newMap.set(newId, widget);
@@ -57,7 +57,7 @@ export function GridStackProvider({
         return { ...w, id: subWidgetId };
       });
 
-      gridStack?.addWidget({ ...widget, id: newId });
+      gridStack.addWidget({ ...widget, id: newId });
 
       setRawWidgetMetaMap((prev) => {
         const newMap = new Map<string, GridStackWidget>(prev);
@@ -72,7 +72,7 @@ export function GridStackProvider({
 
   const removeWidget = useCallback(
     (id: string) => {
-      gridStack?.removeWidget(id);
+      gridStack.removeWidget(id);
       setRawWidgetMetaMap((prev) => {
         const newMap = new Map<string, GridStackWidget>(prev);
         newMap.delete(id);
@@ -83,7 +83,7 @@ export function GridStackProvider({
   );
 
   const saveOptions = useCallback(() => {
-    return gridStack?.save(true, true, (_, widget) => widget);
+    return gridStack.save(true, true, (_, widget) => widget);
   }, [gridStack]);
 
   return (

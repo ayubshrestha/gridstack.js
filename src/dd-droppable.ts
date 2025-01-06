@@ -125,7 +125,7 @@ export class DDDroppable extends DDBaseImplement implements HTMLElementExtendOpt
         let parentDrop: DDDroppable;
         let parent: DDElementHost = this.el.parentElement;
         while (!parentDrop && parent) {
-          parentDrop = parent.ddElement?.ddDroppable;
+          parentDrop = parent.ddElement.ddDroppable;
           parent = parent.parentElement;
         }
         if (parentDrop) {

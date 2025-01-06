@@ -8,7 +8,7 @@ describe('regression >', function() {
     return grid.engine.nodes.find(n => n.id === id)!.el!;
   };
   let findSubEl = function(id: string, index = 0): GridItemHTMLElement {
-    return grid.engine.nodes[index].subGrid?.engine.nodes.find(n => n.id === id)!.el!;
+    return grid.engine.nodes[index].subGrid.engine.nodes.find(n => n.id === id)!.el!;
   };
 
 

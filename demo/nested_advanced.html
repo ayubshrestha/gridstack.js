@@ -77,7 +77,7 @@
     }
 
     function addNewWidget(i) {
-      let subGrid = document.querySelectorAll('.grid-stack-nested')[i]?.gridstack;
+      let subGrid = document.querySelectorAll('.grid-stack-nested')[i].gridstack;
       if (!subGrid) return;
       let node = {
         // x: Math.round(6 * Math.random()),
@@ -91,7 +91,7 @@
     };
 
     function save(content = true, full = true) {
-      options = grid?.save(content, full);
+      options = grid.save(content, full);
       console.log(options);
       document.querySelector('#saved').value = JSON.stringify(options);
     }

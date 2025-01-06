@@ -66,9 +66,9 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     super();
 
     // get the element that is actually supposed to be dragged by
-    const handleName = option?.handle?.substring(1);
+    const handleName = option.handle.substring(1);
     const n = el.gridstackNode;
-    this.dragEls = !handleName || el.classList.contains(handleName) ? [el] : (n?.subGrid ? [el.querySelector(option.handle) || el] : Array.from(el.querySelectorAll(option.handle)));
+    this.dragEls = !handleName || el.classList.contains(handleName) ? [el] : (n.subGrid ? [el.querySelector(option.handle) || el] : Array.from(el.querySelectorAll(option.handle)));
     if (this.dragEls.length === 0) {
       this.dragEls = [el];
     }
@@ -197,7 +197,7 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
       this.dragging = true;
       DDManager.dragElement = this;
       // if we're dragging an actual grid item, set the current drop as the grid (to detect enter/leave)
-      const grid = this.el.gridstackNode?.grid;
+      const grid = this.el.gridstackNode.grid;
       if (grid) {
         DDManager.dropElement = (grid.el as DDElementHost).ddElement.ddDroppable;
       } else {
@@ -231,11 +231,11 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
     }
     if (this.dragging) {
       delete this.dragging;
-      delete (this.el.gridstackNode as GridStackNodeRotate)?._origRotate;
+      delete (this.el.gridstackNode as GridStackNodeRotate)._origRotate;
       document.removeEventListener('keydown', this._keyEvent);
 
       // reset the drop target if dragging over ourself (already parented, just moving during stop callback below)
-      if (DDManager.dropElement?.el === this.el.parentElement) {
+      if (DDManager.dropElement.el === this.el.parentElement) {
         delete DDManager.dropElement;
       }
 
@@ -265,14 +265,14 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal call when keys are being pressed - use Esc to cancel, R to rotate */
   protected _keyEvent(e: KeyboardEvent): void {
     const n = this.el.gridstackNode as GridStackNodeRotate;
-    const grid = n?.grid || (DDManager.dropElement?.el as GridHTMLElement)?.gridstack;
+    const grid = n.grid || (DDManager.dropElement.el as GridHTMLElement).gridstack;
 
     if (e.key === 'Escape') {
       if (n && n._origRotate) {
         n._orig = n._origRotate;
         delete n._origRotate;
       }
-      grid?.cancelDrag();
+      grid.cancelDrag();
       this._mouseUp(this.mouseDownEvent);
     } else if (n && grid && (e.key === 'r' || e.key === 'R')) {
       if (!Utils.canBeRotated(n)) return;
@@ -330,9 +330,9 @@ export class DDDraggable extends DDBaseImplement implements HTMLElementExtendOpt
   /** @internal restore back the original style before dragging */
   protected _removeHelperStyle(): DDDraggable {
     this.helper.classList.remove('ui-draggable-dragging');
-    const node = (this.helper as GridItemHTMLElement)?.gridstackNode;
+    const node = (this.helper as GridItemHTMLElement).gridstackNode;
     // don't bother restoring styles if we're gonna remove anyway...
-    if (!node?._isAboutToRemove && this.dragElementOriginStyle) {
+    if (!node._isAboutToRemove && this.dragElementOriginStyle) {
       const helper = this.helper;
       // don't animate, otherwise we animate offseted when switching back to 'absolute' from 'fixed'.
       // TODO: this also removes resizing animation which doesn't have this issue, but others.

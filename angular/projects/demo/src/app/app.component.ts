@@ -141,10 +141,10 @@ export class AppComponent implements OnInit {
     setTimeout(() => {
       let data;
       switch(val) {
-        case 0: data = this.case0Comp?.items; break;
-        case 1: data = this.case1Comp?.items; break;
-        case 2: data = this.case2Comp?.items; break;
-        case 3: data = this.gridComp?.grid?.save(true, true); break;
+        case 0: data = this.case0Comp.items; break;
+        case 1: data = this.case1Comp.items; break;
+        case 2: data = this.case2Comp.items; break;
+        case 3: data = this.gridComp.grid.save(true, true); break;
         case 4: data = this.items; break;
         case 5: data = this.gridOptionsFull; break;
         case 6: data = this.nestedGridOptions;
@@ -176,24 +176,24 @@ export class AppComponent implements OnInit {
   public add() {
     // TODO: BUG the content doesn't appear until widget is moved around (or another created). Need to force
     // angular detection changes...
-    this.gridComp?.grid?.addWidget({x:3, y:0, w:2, content:`item ${ids}`, id:String(ids++)});
+    this.gridComp.grid.addWidget({x:3, y:0, w:2, content:`item ${ids}`, id:String(ids++)});
   }
   public delete() {
-    let grid = this.gridComp?.grid;
+    let grid = this.gridComp.grid;
     if (!grid) return;
     let node = grid.engine.nodes[0];
     // delete any children first before subGrid itself...
-    if (node?.subGrid && node.subGrid.engine.nodes.length) {
+    if (node.subGrid && node.subGrid.engine.nodes.length) {
       grid = node.subGrid;
       node = grid.engine.nodes[0];
     }
     if (node) grid.removeWidget(node.el!);
   }
   public modify() {
-    this.gridComp?.grid?.update(this.gridComp?.grid.engine.nodes[0]?.el!, {w:3})
+    this.gridComp.grid.update(this.gridComp.grid.engine.nodes[0].el!, {w:3})
   }
   public newLayout() {
-    this.gridComp?.grid?.load([
+    this.gridComp.grid.load([
       {x:0, y:1, id:'1', minW:1, w:1}, // new size/constrain
       {x:1, y:1, id:'2'},
       // {x:2, y:1, id:'3'}, // delete item
@@ -201,7 +201,7 @@ export class AppComponent implements OnInit {
     ]);
   }
   public load(layout: GridStackWidget[]) {
-    this.gridComp?.grid?.load(layout);
+    this.gridComp.grid.load(layout);
   }
 
   /**
@@ -218,7 +218,7 @@ export class AppComponent implements OnInit {
   public modifyNgFor() {
     // this will not update the DOM nor trigger gridstackItems.changes for GS to auto-update, so set new option of the gridItem instead
     // this.items[0].w = 3;
-    const gridItem = this.gridComp?.gridstackItems?.get(0);
+    const gridItem = this.gridComp.gridstackItems.get(0);
     if (gridItem) gridItem.options = {w:3};
   }
   public newLayoutNgFor() {
@@ -231,10 +231,10 @@ export class AppComponent implements OnInit {
   }
   public clearGrid() {
     if (!this.gridComp) return;
-    this.gridComp.grid?.removeAll();
+    this.gridComp.grid.removeAll();
   }
   public saveGrid() {
-    this.serializedData = this.gridComp?.grid?.save(false, true) as GridStackOptions || ''; // no content, full options
+    this.serializedData = this.gridComp.grid.save(false, true) as GridStackOptions || ''; // no content, full options
     if (this.textEl) this.textEl.nativeElement.value = JSON.stringify(this.serializedData, null, '  ');
   }
   public loadGrid() {

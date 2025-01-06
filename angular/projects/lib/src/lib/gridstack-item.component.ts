@@ -45,7 +45,7 @@ export class GridstackItemComponent implements OnDestroy {
 
   /** list of options for creating/updating this item */
   @Input() public set options(val: GridStackNode) {
-    const grid = this.el.gridstackNode?.grid;
+    const grid = this.el.gridstackNode.grid;
     if (grid) {
       // already built, do an update...
       grid.update(this.el, val);

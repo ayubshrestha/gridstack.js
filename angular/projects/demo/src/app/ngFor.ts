@@ -112,7 +112,7 @@ export class AngularNgForTestComponent implements AfterViewInit {
     // but not trigger gridstackItems.changes for GS to auto-update, so call GS update() instead
     // this.items[0].w = 2;
     const n = this.grid.engine.nodes[0];
-    if (n?.el) this.grid.update(n.el, {w:3});
+    if (n.el) this.grid.update(n.el, {w:3});
   }
 
   public newLayout() {

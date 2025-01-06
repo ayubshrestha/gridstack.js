@@ -20,6 +20,6 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.pick-info')?.textContent).toContain('Pick a demo to load');
+    expect(compiled.querySelector('.pick-info').textContent).toContain('Pick a demo to load');
   });
 });

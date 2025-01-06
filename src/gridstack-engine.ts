@@ -143,12 +143,12 @@ export class GridStackEngine {
   /** return the nodes that intercept the given node. Optionally a different area can be used, as well as a second node to skip */
   public collide(skip: GridStackNode, area = skip, skip2?: GridStackNode): GridStackNode | undefined {
     const skipId = skip._id;
-    const skip2Id = skip2?._id;
+    const skip2Id = skip2._id;
     return this.nodes.find(n => n._id !== skipId && n._id !== skip2Id && Utils.isIntercepted(n, area));
   }
   public collideAll(skip: GridStackNode, area = skip, skip2?: GridStackNode): GridStackNode[] {
     const skipId = skip._id;
-    const skip2Id = skip2?._id;
+    const skip2Id = skip2._id;
     return this.nodes.filter(n => n._id !== skipId && n._id !== skip2Id && Utils.isIntercepted(n, area));
   }
 
@@ -707,7 +707,7 @@ export class GridStackEngine {
       // check to make sure we actually collided over 50% surface area while dragging
       let collide = activeDrag ? this.directionCollideCoverage(node, o, collides) : collides[0];
       // if we're enabling creation of sub-grids on the fly, see if we're covering 80% of either one, if we didn't already do that
-      if (activeDrag && collide && node.grid?.opts?.subGridDynamic && !node.grid._isTemp) {
+      if (activeDrag && collide && node.grid.opts.subGridDynamic && !node.grid._isTemp) {
         const over = Utils.areaIntercept(o.rect, collide._rect);
         const a1 = Utils.area(o.rect);
         const a2 = Utils.area(collide._rect);
@@ -764,12 +764,12 @@ export class GridStackEngine {
    * returning a list of widgets for serialization */
   public save(saveElement = true, saveCB?: SaveFcn): GridStackNode[] {
     // use the highest layout for any saved info so we can have full detail on reload #1849
-    const len = this._layouts?.length;
+    const len = this._layouts.length;
     const layout = len && this.column !== (len - 1) ? this._layouts[len - 1] : null;
     const list: GridStackNode[] = [];
     this.sortNodes();
     this.nodes.forEach(n => {
-      const wl = layout?.find(l => l._id === n._id);
+      const wl = layout.find(l => l._id === n._id);
       // use layout info fields instead if set
       const w: GridStackNode = {...n, ...(wl || {})};
       Utils.removeInternalForSave(w, !saveElement);
@@ -851,7 +851,7 @@ export class GridStackEngine {
       // ...if not, start with the largest layout (if not already there) as down-scaling is more accurate
       // by pretending we came from that larger column by assigning those values as starting point
       const lastIndex = this._layouts.length - 1;
-      if (!cacheNodes.length && prevColumn !== lastIndex && this._layouts[lastIndex]?.length) {
+      if (!cacheNodes.length && prevColumn !== lastIndex && this._layouts[lastIndex].length) {
         prevColumn = lastIndex;
         this._layouts[lastIndex].forEach(cacheNode => {
           const n = nodes.find(n => n._id === cacheNode._id);
@@ -941,7 +941,7 @@ export class GridStackEngine {
       // make sure we have an id in case this is new layout, else re-use id already set
       if (n._id === undefined) {
         const existing = n.id ? this.nodes.find(n2 => n2.id === n.id) : undefined; // find existing node using users id
-        n._id = existing?._id ?? GridStackEngine._idSeq++;
+        n._id = existing._id ?? GridStackEngine._idSeq++;
       }
       copy[i] = {x: n.x, y: n.y, w: n.w, _id: n._id} // only thing we change is x,y,w and id to find it back
     });
@@ -970,7 +970,7 @@ export class GridStackEngine {
   }
 
   protected findCacheLayout(n: GridStackNode, column: number): number | undefined {
-    return this._layouts?.[column]?.findIndex(l => l._id === n._id) ?? -1;
+    return this._layouts.[column].findIndex(l => l._id === n._id) ?? -1;
   }
 
   public removeNodeFromLayoutCache(n: GridStackNode) {
